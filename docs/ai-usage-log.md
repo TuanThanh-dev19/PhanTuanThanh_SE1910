@@ -7,3 +7,23 @@ Tài liệu này ghi lại cách AI được sử dụng, phần nào được �
 | 1 | Đọc Assignment 01, phân tích việc cần làm và lập kế hoạch | Requirement matrix, milestone, evidence và checklist theo rubric | Đối chiếu lại toàn bộ Student Guide; review `requirements.md` và `design.md` | Xác nhận giả định lớp học, deadline và quy định nộp |
 | 2 | Rà soát kiến thức ReactJS/Spring Boot trong tài liệu thiết kế | Sửa provider hierarchy; bổ sung immutable state, derived data, Context và ranh giới REST API | Đối chiếu tài liệu chính thức React, React Router và Spring | Có thể giải thích props/state/Context/effect và frontend-backend boundary |
 | 3 | Triển khai milestone Login/Auth | Routing, AuthContext, controlled form, validation, protected route, session và logout | `npm run lint` và `npm run build` pass; AUTH-01 đến AUTH-08 pass trong browser; console không có warning/error | Mở đúng file và giải thích event → validate → setState → navigation → render |
+| 4 | Tạo logo AI và triển khai Admin Layout | Sinh logo, tích hợp asset; xây Header, Sidebar, nested routes và responsive menu | Kiểm tra ảnh RGBA có transparency; lint/build pass; LAYOUT-01 đến NAV-07 pass; tab browser sạch không có warning/error | Giải thích `AdminLayout → Outlet`, `NavLink`, props, state mở sidebar và cách import asset |
+
+## Logo generation record
+
+- Mode: built-in image generation.
+- Project asset: `src/assets/funews-logo.png`.
+- Output: PNG 1254 × 1254, RGBA, có kênh trong suốt.
+- Nơi sử dụng: Login, Header và Sidebar.
+
+Final prompt:
+
+```text
+Use case: logo-brand
+Asset type: application logo mark for the FUNewsManagementSystem React admin dashboard
+Primary request: create an original geometric symbol that combines a folded newspaper/page with a subtle forward-moving news signal; the mark should communicate news management, organization, and trust
+Style/medium: clean vector-like logo mark, flat colors, minimal, crisp edges
+Composition/framing: one centered square icon with a strong silhouette, balanced negative space, and generous transparent padding; readable at 32px
+Color palette: deep navy #0C2742 and clear blue #1971D4, with optional white negative space
+Constraints: genuinely transparent background; symbol only; no words, no letters, no gradients, no mockup, no 3D, no shadow, no watermark, no trademarked imagery
+```

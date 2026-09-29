@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import useAuth from '../hooks/useAuth.js'
+import funewsLogo from '../assets/funews-logo.png'
 
 const INITIAL_FORM = {
   username: '',
@@ -75,9 +76,7 @@ function LoginPage() {
     <main className="login-page">
       <section className="login-intro" aria-labelledby="system-name">
         <div className="brand-lockup">
-          <span className="brand-mark" aria-hidden="true">
-            FN
-          </span>
+          <img className="brand-logo" src={funewsLogo} alt="FUNews logo" />
           <span>FUNews</span>
         </div>
 

@@ -1,55 +1,60 @@
-import { useNavigate } from 'react-router'
-import useAuth from '../hooks/useAuth.js'
+const modules = [
+  {
+    name: 'Category',
+    description: 'Organize articles into clear publishing topics.',
+    shortLabel: 'CA',
+  },
+  {
+    name: 'News articles',
+    description: 'Create and maintain newsroom content.',
+    shortLabel: 'NE',
+  },
+  {
+    name: 'User accounts',
+    description: 'Manage Admin and Staff accounts.',
+    shortLabel: 'US',
+  },
+]
 
 function DashboardPage() {
-  const { currentUser, logout } = useAuth()
-  const navigate = useNavigate()
-
-  function handleLogout() {
-    logout()
-    navigate('/login', { replace: true })
-  }
-
   return (
-    <main className="dashboard-page">
-      <header className="dashboard-header">
-        <div className="brand-lockup brand-lockup--dark">
-          <span className="brand-mark" aria-hidden="true">
-            FN
-          </span>
-          <span>FUNews</span>
+    <section className="page-section" aria-labelledby="dashboard-title">
+      <div className="page-heading">
+        <div>
+          <p className="eyebrow">Overview</p>
+          <h1 id="dashboard-title">Dashboard</h1>
+          <p>Monitor the main areas of the FUNews management workspace.</p>
         </div>
+        <span className="status-chip">Layout milestone</span>
+      </div>
 
-        <div className="dashboard-header__actions">
-          <span className="current-user">{currentUser.displayName}</span>
-          <button className="secondary-button" type="button" onClick={handleLogout}>
-            Log out
-          </button>
+      <div className="module-grid" aria-label="Management modules">
+        {modules.map((module) => (
+          <article className="module-card" key={module.name}>
+            <span className="module-card__icon" aria-hidden="true">
+              {module.shortLabel}
+            </span>
+            <div>
+              <h2>{module.name}</h2>
+              <p>{module.description}</p>
+            </div>
+            <span className="module-card__status">Data setup next</span>
+          </article>
+        ))}
+      </div>
+
+      <article className="workspace-note">
+        <div>
+          <p className="eyebrow">Current milestone</p>
+          <h2>Navigation foundation is ready</h2>
         </div>
-      </header>
-
-      <section className="dashboard-content" aria-labelledby="dashboard-title">
-        <p className="eyebrow">Authentication milestone</p>
-        <h1 id="dashboard-title">Welcome, {currentUser.username}</h1>
-        <p className="dashboard-lead">
-          Login, session restoration, protected routing and logout are ready.
-          The complete admin layout will be added in the next milestone.
+        <p>
+          Header, sidebar, protected nested routes and responsive navigation are
+          now shared by every administration page. Mock entity data and CRUD will
+          be introduced in the next milestone.
         </p>
-
-        <div className="milestone-card">
-          <span className="milestone-card__icon" aria-hidden="true">
-            ✓
-          </span>
-          <div>
-            <h2>Secure area reached</h2>
-            <p>
-              This page is only rendered after the mock Admin account has been
-              authenticated.
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
+      </article>
+    </section>
   )
 }
 
