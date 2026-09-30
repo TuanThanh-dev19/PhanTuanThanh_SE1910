@@ -11,6 +11,8 @@ function Header({ isMenuOpen, onMenuToggle }) {
     navigate('/login', { replace: true })
   }
 
+  const roleLabel = currentUser.role === 1 ? 'Admin' : 'Staff'
+
   return (
     <header className="admin-header">
       <div className="admin-header__start">
@@ -37,8 +39,8 @@ function Header({ isMenuOpen, onMenuToggle }) {
             {currentUser.username.charAt(0)}
           </span>
           <span className="user-summary__copy">
-            <strong>{currentUser.displayName}</strong>
-            <span>Admin</span>
+            <strong>{currentUser.username}</strong>
+            <span>{roleLabel}</span>
           </span>
         </div>
 
