@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router'
 import funewsLogo from '../../assets/funews-logo.png'
 import useAuth from '../../hooks/useAuth.js'
+import useSettings from '../../hooks/useSettings.js'
 
 function Header({ isMenuOpen, onMenuToggle }) {
   const { currentUser, logout } = useAuth()
+  const { settings } = useSettings()
   const navigate = useNavigate()
 
   function handleLogout() {
@@ -12,6 +14,7 @@ function Header({ isMenuOpen, onMenuToggle }) {
   }
 
   const roleLabel = currentUser.role === 1 ? 'Admin' : 'Staff'
+  const avatarLabel = settings.displayName.charAt(0).toUpperCase()
 
   return (
     <header className="admin-header">
@@ -36,10 +39,10 @@ function Header({ isMenuOpen, onMenuToggle }) {
       <div className="admin-header__actions">
         <div className="user-summary">
           <span className="user-avatar" aria-hidden="true">
-            {currentUser.username.charAt(0)}
+            {avatarLabel}
           </span>
           <span className="user-summary__copy">
-            <strong>{currentUser.username}</strong>
+            <strong>{settings.displayName}</strong>
             <span>{roleLabel}</span>
           </span>
         </div>

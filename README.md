@@ -50,11 +50,15 @@ The credential is case-sensitive. Other mock Staff records are management data a
 - Popup dialog for Create/Update.
 - Confirmation dialog for Delete.
 - Empty and no-result states.
-- Dashboard summary and minimal Settings information.
+- Dashboard summary and functional personal Settings.
+- Settings profile with display-name/email validation, Header synchronization
+  and `localStorage` persistence.
 
 ## Data and delete rules
 
 - Category, News and Users are initialized from seed data and persisted in `localStorage`.
+- Personal Settings are stored under `funews.settings` and safely fall back to
+  defaults when saved data is missing or invalid.
 - A Category referenced by News cannot be deleted.
 - The signed-in User cannot be deleted.
 - A User referenced as a News creator cannot be deleted.

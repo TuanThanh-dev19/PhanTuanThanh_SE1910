@@ -43,7 +43,7 @@ User event
 UI Pages/Components
     |
     v
-AuthContext / DataContext
+AuthContext / DataContext / SettingsContext
     |
     v
 Storage Service
@@ -68,38 +68,39 @@ main.jsx
    └─ BrowserRouter
       └─ DataProvider
          └─ AuthProvider
-            └─ App
-               └─ AppRoutes
-                  ├─ LoginPage
-                  └─ ProtectedRoute
-                     └─ AdminLayout
-                        ├─ Header
-                        │  ├─ BrandLogo
-                        │  └─ UserMenu / LogoutButton
-                        ├─ Sidebar
-                        │  └─ NavigationItem[]
-                        └─ Outlet
-                           ├─ DashboardPage
-                           │  └─ SummaryCard[]
-                           ├─ CategoriesPage
-                           │  ├─ ManagementToolbar
-                           │  ├─ CategoryTable
-                           │  ├─ CategoryFormDialog
-                           │  └─ ConfirmDialog
-                           ├─ NewsPage
-                           │  ├─ ManagementToolbar
-                           │  ├─ NewsTable
-                           │  ├─ NewsFormDialog
-                           │  └─ ConfirmDialog
-                           ├─ UsersPage
-                           │  ├─ ManagementToolbar
-                           │  ├─ UserTable
-                           │  ├─ UserFormDialog
-                           │  └─ ConfirmDialog
-                           └─ SettingsPage
+            └─ SettingsProvider
+               └─ App
+                  └─ AppRoutes
+                     ├─ LoginPage
+                     └─ ProtectedRoute
+                        └─ AdminLayout
+                           ├─ Header
+                           │  ├─ BrandLogo
+                           │  └─ UserMenu / LogoutButton
+                           ├─ Sidebar
+                           │  └─ NavigationItem[]
+                           └─ Outlet
+                              ├─ DashboardPage
+                              │  └─ SummaryCard[]
+                              ├─ CategoriesPage
+                              │  ├─ ManagementToolbar
+                              │  ├─ CategoryTable
+                              │  ├─ CategoryFormDialog
+                              │  └─ ConfirmDialog
+                              ├─ NewsPage
+                              │  ├─ ManagementToolbar
+                              │  ├─ NewsTable
+                              │  ├─ NewsFormDialog
+                              │  └─ ConfirmDialog
+                              ├─ UsersPage
+                              │  ├─ ManagementToolbar
+                              │  ├─ UserTable
+                              │  ├─ UserFormDialog
+                              │  └─ ConfirmDialog
+                              └─ SettingsPage
 ```
 
-Provider phải bao bọc component cần đọc Context. `DataProvider` được đặt ngoài `AuthProvider` để auth có thể tra cứu tài khoản mock từ nguồn Users mà không tạo dependency vòng. `BrowserRouter` bao bọc toàn bộ nhánh cần dùng route hooks/components.
+Provider phải bao bọc component cần đọc Context. `DataProvider` được đặt ngoài `AuthProvider` để auth có thể tra cứu tài khoản mock từ nguồn Users mà không tạo dependency vòng. `SettingsProvider` bao bọc App để Header và SettingsPage dùng chung profile. `BrowserRouter` bao bọc toàn bộ nhánh cần dùng route hooks/components.
 
 Không bắt buộc trừu tượng hóa `ManagementToolbar` hoặc `DataTable` ngay từ đầu. Chỉ tách thành component dùng chung sau khi Category flow chạy ổn và nhận thấy API thực sự giống nhau.
 
@@ -179,6 +180,7 @@ Navigation dùng React Router để URL phản ánh màn hình hiện tại, act
 |---|---|---|
 | `isAuthenticated`, `currentUser` | `AuthContext` | Chi phối route, Header và Logout |
 | `categories`, `news`, `users` | `DataContext` | Nhiều page/Dashboard cần đọc dữ liệu |
+| `displayName`, `email` | `SettingsContext` | SettingsPage chỉnh sửa và Header hiển thị cùng một profile |
 | `keyword` | Management page tương ứng | Chỉ phục vụ search của page đó |
 | `isFormOpen`, `formMode` | Management page | Điều khiển dialog Create/Update |
 | `selectedItem` | Management page | Dùng cho Update/Delete |
@@ -201,6 +203,7 @@ funews.categories
 funews.news
 funews.users
 funews.session
+funews.settings
 ```
 
 ### 8.2 Hydration flow
@@ -212,6 +215,18 @@ funews.session
 5. Settings có thể cung cấp thao tác reset demo data nếu cần, kèm confirmation.
 
 Storage service phải xử lý `JSON.parse` lỗi và không để dữ liệu hỏng làm ứng dụng crash.
+
+### 8.3 Settings flow
+
+```text
+Settings form → validate display name/email → Save
+              → SettingsContext update → Header re-render
+              → persist funews.settings → reload vẫn giữ cấu hình
+```
+
+- `username` và `role` chỉ đọc vì thuộc phạm vi quản lý tài khoản.
+- `displayName` là thông tin trình bày của phiên quản trị và xuất hiện trên Header.
+- Dữ liệu Settings sai schema hoặc JSON hỏng sẽ fallback về mặc định.
 
 ## 9. Authentication design
 
@@ -328,6 +343,7 @@ Policy chặn xóa giúp giữ referential integrity và dễ chứng minh hơn 
 | D08 | CSS thuần, không dùng UI framework | Ít dependency, dễ chứng minh code tự viết | Tốn công styling và accessibility dialog hơn |
 | D09 | ID bằng `crypto.randomUUID()` khi khả dụng | Unique và không phụ thuộc index/độ dài mảng | Có thể cần fallback nếu môi trường cũ |
 | D10 | Triển khai Category hoàn chỉnh trước | Tạo pattern CRUD đã kiểm chứng rồi áp dụng cho News/User | Tránh trừu tượng hóa sớm; có thể refactor sau |
+| D11 | Settings dùng Context riêng | Header và SettingsPage cần cùng profile mà không trộn với entity data | Thêm một Provider nhỏ nhưng luồng state rõ và dễ thay bằng API sau này |
 
 ## 16. Milestone triển khai
 
