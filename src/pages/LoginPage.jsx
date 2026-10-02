@@ -79,19 +79,9 @@ function LoginPage() {
           <img className="brand-logo" src={funewsLogo} alt="FUNews logo" />
           <span>FUNews</span>
         </div>
-
         <div className="login-intro__content">
-          <p className="eyebrow">Newsroom administration</p>
-          <h1 id="system-name">Keep every story organized and ready to publish.</h1>
-          <p>
-            Manage categories, articles and user accounts from one focused
-            workspace.
-          </p>
+          <h1 id="system-name">FUNews Management System</h1>
         </div>
-
-        <p className="login-intro__note">
-          SBA301 Assignment 01 · React single-page application
-        </p>
       </section>
 
       <section className="login-panel" aria-labelledby="login-title">
@@ -99,7 +89,6 @@ function LoginPage() {
           <div className="login-card__heading">
             <p className="eyebrow">Administrator access</p>
             <h2 id="login-title">Welcome back</h2>
-            <p>Enter your account details to continue.</p>
           </div>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>

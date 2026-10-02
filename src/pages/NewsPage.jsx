@@ -108,14 +108,14 @@ function NewsPage() {
   }
 
   return (
-    <section className="page-section" aria-labelledby="news-title">
+    <section
+      className="page-section page-section--news"
+      aria-labelledby="news-title"
+    >
       <div className="page-heading">
         <div>
-          <p className="eyebrow">Editorial workspace</p>
           <h1 id="news-title">News</h1>
-          <p>Create, update, search and maintain publishing relationships.</p>
         </div>
-        <span className="status-chip">{news.length} records</span>
       </div>
 
       <div className="management-toolbar">
@@ -160,7 +160,6 @@ function NewsPage() {
               Showing {displayedArticles.length} of {news.length} records.
             </p>
           </div>
-          <span className="read-badge">CRUD enabled</span>
         </div>
 
         {news.length === 0 ? (

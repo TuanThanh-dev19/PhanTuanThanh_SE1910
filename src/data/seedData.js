@@ -48,9 +48,9 @@ export const seedUsers = [
 export const seedNews = [
   {
     id: 'news-ai-newsroom',
-    title: 'AI tools reshape the modern newsroom',
+    title: 'New digital services launch for university students',
     content:
-      'Editors are adopting assistive tools while keeping human review at the center of publishing.',
+      'Universities are expanding online services to make academic information and campus support easier to access.',
     categoryId: 'category-technology',
     createdBy: 'admin-account',
     status: 1,

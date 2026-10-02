@@ -26,7 +26,6 @@ function UserTable({ news, onDelete, onEdit, users }) {
               <tr key={user.id}>
                 <td>
                   <strong>{user.username}</strong>
-                  <code className="record-id">{user.id}</code>
                 </td>
                 <td>
                   <span className="role-badge">

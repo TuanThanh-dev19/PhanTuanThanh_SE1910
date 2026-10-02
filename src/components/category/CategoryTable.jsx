@@ -14,9 +14,7 @@ function CategoryTable({ categories, news, onDelete, onEdit }) {
             <th scope="col">Category name</th>
             <th scope="col">Status</th>
             <th scope="col">News usage</th>
-            <th scope="col">
-              <span className="sr-only">Actions</span>
-            </th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -27,7 +25,6 @@ function CategoryTable({ categories, news, onDelete, onEdit }) {
               <tr key={category.id}>
                 <td>
                   <strong>{category.name}</strong>
-                  <code className="record-id">{category.id}</code>
                 </td>
                 <td>
                   <StatusBadge status={category.status} />

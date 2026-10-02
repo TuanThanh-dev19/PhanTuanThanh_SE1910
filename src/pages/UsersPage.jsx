@@ -115,14 +115,14 @@ function UsersPage() {
     : null
 
   return (
-    <section className="page-section" aria-labelledby="users-title">
+    <section
+      className="page-section page-section--users"
+      aria-labelledby="users-title"
+    >
       <div className="page-heading">
         <div>
-          <p className="eyebrow">Account administration</p>
           <h1 id="users-title">Users</h1>
-          <p>Create, update, search and safely remove mock user accounts.</p>
         </div>
-        <span className="status-chip">{users.length} records</span>
       </div>
 
       <div className="management-toolbar">
@@ -164,11 +164,9 @@ function UsersPage() {
           <div>
             <h2>User list</h2>
             <p>
-              Showing {displayedUsers.length} of {users.length} records. Mock
-              passwords are never displayed in the table.
+              Showing {displayedUsers.length} of {users.length} records.
             </p>
           </div>
-          <span className="read-badge">CRUD enabled</span>
         </div>
 
         {users.length === 0 ? (

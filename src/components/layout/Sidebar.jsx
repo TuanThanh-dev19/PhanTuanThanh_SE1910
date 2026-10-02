@@ -42,14 +42,6 @@ function Sidebar({ isOpen, onClose }) {
           </NavLink>
         ))}
       </nav>
-
-      <div className="sidebar-footer">
-        <span className="sidebar-footer__dot" aria-hidden="true" />
-        <span>
-          <strong>Assignment workspace</strong>
-          <small>ReactJS · Local mock data</small>
-        </span>
-      </div>
     </aside>
   )
 }

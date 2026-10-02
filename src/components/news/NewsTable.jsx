@@ -31,7 +31,6 @@ function NewsTable({ articles, categories, onDelete, onEdit, users }) {
               <td>
                 <strong>{article.title}</strong>
                 <span className="cell-description">{article.content}</span>
-                <code className="record-id">{article.id}</code>
               </td>
               <td>{getCategoryName(article.categoryId)}</td>
               <td>{getCreatorName(article.createdBy)}</td>

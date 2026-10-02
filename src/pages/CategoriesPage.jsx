@@ -90,14 +90,14 @@ function CategoriesPage() {
   }
 
   return (
-    <section className="page-section" aria-labelledby="categories-title">
+    <section
+      className="page-section page-section--categories"
+      aria-labelledby="categories-title"
+    >
       <div className="page-heading">
         <div>
-          <p className="eyebrow">Content structure</p>
           <h1 id="categories-title">Category</h1>
-          <p>Create, update, search and safely remove publishing categories.</p>
         </div>
-        <span className="status-chip">{categories.length} records</span>
       </div>
 
       <div className="management-toolbar">
@@ -142,7 +142,6 @@ function CategoriesPage() {
               Showing {displayedCategories.length} of {categories.length} records.
             </p>
           </div>
-          <span className="read-badge">CRUD enabled</span>
         </div>
 
         {categories.length === 0 ? (
