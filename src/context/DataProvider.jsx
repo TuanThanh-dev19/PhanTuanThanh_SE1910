@@ -16,6 +16,12 @@ import {
   replaceCategory,
 } from '../utils/categoryOperations.js'
 import { createId } from '../utils/id.js'
+import {
+  appendNewsArticle,
+  removeNewsArticle,
+  replaceNewsArticle,
+} from '../utils/newsOperations.js'
+import { appendUser, removeUser, replaceUser } from '../utils/userOperations.js'
 
 function isStatus(value) {
   return value === 0 || value === 1
@@ -99,10 +105,10 @@ function DataProvider({ children }) {
       isCategoryCollection,
     ),
   )
-  const [users] = useState(() =>
+  const [users, setUsers] = useState(() =>
     loadCollection(STORAGE_KEYS.users, seedUsers, isUserCollection),
   )
-  const [news] = useState(() =>
+  const [news, setNews] = useState(() =>
     loadCollection(STORAGE_KEYS.news, seedNews, (articles) =>
       isNewsCollection(articles, categories, users),
     ),
@@ -151,6 +157,55 @@ function DataProvider({ children }) {
     return { success: true, referenceCount: 0 }
   }
 
+  function createNewsArticle(articleData) {
+    const newArticle = {
+      id: createId('news'),
+      ...articleData,
+    }
+
+    setNews((previous) => appendNewsArticle(previous, newArticle))
+    return newArticle
+  }
+
+  function updateNewsArticle(articleId, articleData) {
+    setNews((previous) =>
+      replaceNewsArticle(previous, articleId, articleData),
+    )
+  }
+
+  function deleteNewsArticle(articleId) {
+    setNews((previous) => removeNewsArticle(previous, articleId))
+  }
+
+  function createUser(userData) {
+    const newUser = {
+      id: createId('user'),
+      ...userData,
+    }
+
+    setUsers((previous) => appendUser(previous, newUser))
+    return newUser
+  }
+
+  function updateUser(userId, userData) {
+    setUsers((previous) => replaceUser(previous, userId, userData))
+  }
+
+  function deleteUser(userId, currentUserId) {
+    const result = removeUser(users, news, userId, currentUserId)
+
+    if (!result.success) {
+      return {
+        success: false,
+        reason: result.reason,
+        referenceCount: result.referenceCount,
+      }
+    }
+
+    setUsers(result.users)
+    return { success: true, reason: null, referenceCount: 0 }
+  }
+
   const value = {
     categories,
     news,
@@ -158,6 +213,12 @@ function DataProvider({ children }) {
     createCategory,
     updateCategory,
     deleteCategory,
+    createNewsArticle,
+    updateNewsArticle,
+    deleteNewsArticle,
+    createUser,
+    updateUser,
+    deleteUser,
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

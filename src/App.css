@@ -761,7 +761,11 @@
 }
 
 .data-table--news {
-  min-width: 54rem;
+  min-width: 66rem;
+}
+
+.data-table--users {
+  min-width: 58rem;
 }
 
 .data-table th,
@@ -925,10 +929,17 @@
   min-width: 48rem;
 }
 
-.data-table--categories .record-id {
+.data-table--categories .record-id,
+.data-table--users .record-id {
   display: block;
   width: fit-content;
   margin-top: 0.35rem;
+}
+
+.data-table--news .record-id {
+  display: block;
+  width: fit-content;
+  margin-top: 0.45rem;
 }
 
 .table-actions {
@@ -1016,6 +1027,10 @@
   box-shadow: var(--shadow-card);
 }
 
+.modal-card--wide {
+  width: min(100%, 42rem);
+}
+
 .modal-card__header {
   display: flex;
   align-items: flex-start;
@@ -1055,6 +1070,30 @@
   padding-top: 1.4rem;
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dialog-form textarea {
+  width: 100%;
+  min-height: 8.5rem;
+  padding: 0.85rem 1rem;
+  resize: vertical;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-sm);
+  color: var(--color-slate-900);
+  background: var(--color-white);
+  line-height: 1.6;
+}
+
+.dialog-form textarea:focus {
+  border-color: var(--color-blue-600);
+  box-shadow: 0 0 0 4px var(--color-blue-100);
+  outline: none;
+}
+
 .dialog-form select {
   width: 100%;
   min-height: 3.25rem;
@@ -1069,6 +1108,35 @@
   border-color: var(--color-blue-600);
   box-shadow: 0 0 0 4px var(--color-blue-100);
   outline: none;
+}
+
+.creator-note {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.2rem 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-slate-100);
+}
+
+.creator-note > span {
+  color: var(--color-slate-500);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.creator-note > strong {
+  color: var(--color-slate-900);
+  font-size: 0.8rem;
+}
+
+.creator-note > small {
+  grid-column: 1 / -1;
+  color: var(--color-slate-500);
+  font-size: 0.7rem;
+  line-height: 1.5;
 }
 
 .confirm-message {
@@ -1255,6 +1323,10 @@
 
   .modal-actions {
     flex-direction: column-reverse;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
   .primary-action,

@@ -1,16 +1,95 @@
-# React + Vite
+# FUNewsManagementSystem
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SBA301 Assignment 01 - a ReactJS single-page administration application for managing news categories, articles and mock user accounts.
 
-Currently, two official plugins are available:
+## Technology
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- ReactJS with Vite.
+- React Router for SPA navigation and protected routes.
+- React Context and component state for application data and UI state.
+- Browser `localStorage` for mock persistence.
+- Plain HTML and CSS for the interface.
 
-## React Compiler
+The assignment does not use a Spring Boot backend, database, JWT or production authentication.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Requirements
 
-## Expanding the ESLint configuration
+- Node.js and npm.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Install and run
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+Production verification:
+
+```bash
+npm run lint
+npm run build
+```
+
+## Test credential
+
+- Username: `Admin`
+- Password: `Admin`
+
+The credential is case-sensitive. Other mock Staff records are management data and cannot log in to the administration area.
+
+## Core functions
+
+- Login validation, persistent mock session, protected routes and logout.
+- Shared Header, Sidebar and responsive administration layout.
+- Navigation for Dashboard, Category, News, Users and Settings.
+- Category CRUD and Search with duplicate-name validation.
+- News CRUD and Search with Category and creator relations.
+- User CRUD and Search with Admin/Staff and Active/Inactive values.
+- Popup dialog for Create/Update.
+- Confirmation dialog for Delete.
+- Empty and no-result states.
+- Dashboard summary and minimal Settings information.
+
+## Data and delete rules
+
+- Category, News and Users are initialized from seed data and persisted in `localStorage`.
+- A Category referenced by News cannot be deleted.
+- The signed-in User cannot be deleted.
+- A User referenced as a News creator cannot be deleted.
+- User mock passwords are not displayed in the Users table.
+
+## Project structure
+
+```text
+src/
+├─ components/   Reusable layout, common and entity components
+├─ context/      Authentication and shared data providers
+├─ data/         Initial mock data
+├─ hooks/        Context access hooks
+├─ layouts/      Shared admin layout
+├─ pages/        Login and administration pages
+├─ routes/       Protected route
+├─ services/     localStorage access
+└─ utils/        Validation and immutable CRUD operations
+```
+
+## Verification documents
+
+- `docs/requirements.md`: requirement traceability and data rules.
+- `docs/design.md`: component, state, persistence and CRUD design decisions.
+- `docs/test-matrix.md`: manual test cases and actual results.
+- `docs/debug-log.md`: defects, root causes, fixes and retests.
+- `docs/ai-usage-log.md`: AI prompts, applied suggestions and verification.
+
+## Limitations
+
+- Authentication and passwords are only mock assignment data.
+- Data belongs to one browser origin and can be removed by clearing browser storage.
+- There is no backend synchronization or multi-user concurrency.
+- Staff authorization is outside the core scope; only `Admin/Admin` can log in.
+
+## AI usage
+
+AI was used for requirement analysis, implementation review, test-case preparation, debugging suggestions and the original FUNews logo. Every applied result is recorded and verified in `docs/ai-usage-log.md`.

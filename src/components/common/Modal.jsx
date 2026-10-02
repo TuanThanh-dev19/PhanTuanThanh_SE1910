@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-function Modal({ children, labelledBy, onClose }) {
+function Modal({ children, labelledBy, onClose, size = 'default' }) {
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') {
@@ -21,7 +21,7 @@ function Modal({ children, labelledBy, onClose }) {
   return (
     <div className="modal-backdrop" onMouseDown={handleBackdropMouseDown}>
       <section
-        className="modal-card"
+        className={`modal-card${size === 'wide' ? ' modal-card--wide' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

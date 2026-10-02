@@ -23,9 +23,9 @@ Sản phẩm không chỉ cần chạy được mà còn phải có bằng chứ
 |---|---|---|
 | A01 | Giảng viên không cung cấp HTML/CSS template hoặc ảnh giao diện mẫu. Sinh viên tự thiết kế giao diện quản trị. | Đã xác nhận |
 | A02 | Tiêu đề môn học nhắc tới tích hợp SPA với Spring Boot, nhưng phạm vi Assignment 01 không yêu cầu Spring Boot backend, database thật hoặc JWT. | Theo assignment |
-| A03 | Dữ liệu được mô phỏng và có thể lưu bằng `localStorage`. | Quyết định dự kiến |
+| A03 | Dữ liệu được mô phỏng và có thể lưu bằng `localStorage`. | Đã triển khai |
 | A04 | Logo FUNewsManagementSystem sẽ được tạo bằng công cụ AI và lưu lại prompt/AI log. | Theo assignment |
-| A05 | Tài khoản đăng nhập bắt buộc là `Admin` / `Admin`; việc phân biệt hoa thường sẽ được giữ đúng như đề. | Quyết định dự kiến |
+| A05 | Tài khoản đăng nhập bắt buộc là `Admin` / `Admin`; việc phân biệt hoa thường sẽ được giữ đúng như đề. | Đã triển khai |
 | A06 | Ngày nộp, định dạng nộp và yêu cầu video/screenshot cụ thể phụ thuộc thông báo của lớp. | Cần theo dõi |
 
 ## 4. Phạm vi chức năng

@@ -217,7 +217,8 @@ Storage service phải xử lý `JSON.parse` lỗi và không để dữ liệu 
 
 - Login form dùng controlled inputs.
 - Validate empty trước khi xác thực.
-- Credential baseline: `Admin` / `Admin`.
+- Credential baseline: `Admin` / `Admin`, phân biệt hoa thường.
+- Staff là dữ liệu quản lý theo core scope và không đăng nhập; phân quyền Staff chỉ thực hiện nếu có modification task.
 - Khi thành công, lưu `currentUserId`; UI lấy user từ users source data.
 - `ProtectedRoute` kiểm tra auth state trước khi render AdminLayout.
 - Logout xóa session và chuyển về `/login`.

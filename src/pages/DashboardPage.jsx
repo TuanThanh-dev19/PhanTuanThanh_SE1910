@@ -59,13 +59,13 @@ function DashboardPage() {
 
       <article className="workspace-note">
         <div>
-          <p className="eyebrow">Current milestone</p>
-          <h2>Read layer is connected</h2>
+          <p className="eyebrow">Core scope</p>
+          <h2>Management flows are connected</h2>
         </div>
         <p>
-          Seed data is hydrated through a storage service and shared by
-          DataContext. Category, News and Users now render source data without
-          duplicating it inside individual pages.
+          Category, News and Users support the required local CRUD and Search
+          flows. Data is shared through DataContext and persisted with
+          localStorage for assignment verification.
         </p>
       </article>
     </section>
