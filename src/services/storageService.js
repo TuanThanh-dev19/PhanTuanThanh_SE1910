@@ -16,7 +16,7 @@ function removeStoredValue(storageKey) {
   }
 }
 
-export function loadCollection(storageKey, fallbackRecords, isValidCollection) {
+export function loadCollection(storageKey, fallbackRecords) {
   try {
     const storedValue = localStorage.getItem(storageKey)
 
@@ -25,7 +25,7 @@ export function loadCollection(storageKey, fallbackRecords, isValidCollection) {
     }
 
     const parsedValue = JSON.parse(storedValue)
-    if (Array.isArray(parsedValue) && isValidCollection(parsedValue)) {
+    if (Array.isArray(parsedValue)) {
       return parsedValue
     }
 

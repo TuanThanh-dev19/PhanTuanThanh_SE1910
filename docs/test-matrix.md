@@ -2,7 +2,7 @@
 
 ## Trạng thái
 
-Tài liệu được cập nhật theo từng milestone. Các case chưa triển khai sẽ được bổ sung khi chức năng tương ứng hoàn thành.
+Toàn bộ 35 case bắt buộc trong Student Guide đã được đối chiếu và chạy. Các case bổ sung kiểm tra validation, relation, responsive và immutable operations được giữ lại để tăng chất lượng verification. Screenshot evidence được quản lý riêng tại `docs/evidence/README.md`.
 
 ## Login và Authentication
 
@@ -36,12 +36,14 @@ Tài liệu được cập nhật theo từng milestone. Các case chưa triển
 | ID | Nhóm | Trường hợp | Các bước | Kết quả mong đợi | Actual | Trạng thái |
 |---|---|---|---|---|---|---|
 | DATA-01 | Seed data | Hydrate dữ liệu lần đầu | Login và mở Dashboard | Hiển thị đúng tổng Category, News, User | Dashboard hiển thị lần lượt 4, 3, 3 records | Pass |
+| STORAGE-01 | First run | Chưa có các key `funews.*` trong localStorage | Mở ứng dụng trên origin test mới, login `Admin/Admin` và quan sát Dashboard | Ứng dụng không crash; tự hydrate seed data và tạo session hợp lệ | Origin `127.0.0.1:5174` mở ở Login; sau login Dashboard hiển thị 4 Category, 3 News, 3 Users | Pass |
 | DATA-02 | Category Read | Hiển thị Category | Mở `/categories` | Stable key, tên và Active/Inactive đúng | 4 dòng: Business, Education, Technology, Lifestyle; 3 Active và 1 Inactive | Pass |
 | DATA-03 | News Read | Resolve quan hệ | Mở `/news` | `categoryId` và `createdBy` được đổi thành tên dễ đọc | Ba dòng resolve đúng Technology/Education/Business và Admin/MinhAnh | Pass |
 | DATA-04 | User Read | Hiển thị role/status an toàn | Mở `/users` | Admin/Staff và Active/Inactive đúng; không render mock password | 3 user đúng role; `Staff123` không xuất hiện trong page text | Pass |
 | DATA-05 | Persistence | Reload sau khi hydrate | Reload Dashboard | Session và ba collection vẫn sử dụng được | Vẫn ở `/dashboard`; các count giữ 4, 3, 3 | Pass |
-| DATA-06 | Data-driven auth | Chỉ Admin baseline đăng nhập | Thử Staff hoặc User Inactive rồi thử `Admin/Admin` | Staff/Inactive bị từ chối; Admin Active đăng nhập được | Staff không thuộc credential baseline; `Admin/Admin` vào Dashboard | Pass |
-| DATA-07 | Invalid storage | JSON hoặc collection không hợp lệ | Chạy kiểm tra storage service với mock localStorage | Không throw; trả về bản copy seed data | Invalid JSON và invalid record đều fallback về seed | Pass |
+| DATA-06 | Mock auth boundary | Chỉ credential baseline đăng nhập | Thử Staff hoặc User Inactive rồi thử `Admin/Admin` | User management không chi phối auth; chỉ `Admin/Admin` đăng nhập được | Staff không thuộc credential baseline; `Admin/Admin` vào Dashboard | Pass |
+| DATA-07 | Invalid storage | JSON lỗi hoặc giá trị không phải array | Chạy kiểm tra storage service với mock localStorage | Không throw; trả về bản copy seed data | Invalid JSON và non-array value đều fallback về seed | Pass |
+| DATA-EMPTY-01 | Empty state | Đưa News source list về mảng rỗng trên origin test | Reload `/news` sau khi dữ liệu News rỗng | UI không crash; hiển thị empty state riêng, không nhầm với no-result search | Trang News hiển thị `No news articles yet`; layout và nút Add News Article vẫn sử dụng được | Pass |
 
 ## Category CRUD và Search
 
@@ -57,6 +59,7 @@ Tài liệu được cập nhật theo từng milestone. Các case chưa triển
 | CAT-08 | Search + Update | CRUD khi đang search | Search `arts`, edit thành `Culture & Arts` | Cập nhật source đúng theo ID; filtered list được tính lại | Vẫn hiển thị 1/5 và tên mới | Pass |
 | CAT-09 | Delete | Category đang được News dùng | Bấm Delete Technology | Chặn xóa và giải thích số News tham chiếu | Dialog báo 1 News article; không có nút confirm delete | Pass |
 | CAT-10 | Delete | Cancel confirmation | Bấm Delete Lifestyle rồi Cancel | Dialog đóng, dữ liệu không đổi | Lifestyle vẫn xuất hiện | Pass |
+| CAT-DELETE-CONFIRM | Delete | Confirm xóa qua UI | Tạo `Delete Test Category` không được News sử dụng, bấm Delete → Confirm, sau đó reload | Xóa đúng record; count giảm; record không xuất hiện lại sau reload | Dialog hiển thị đúng tên; count giảm 5 xuống 4; reload không còn `Delete Test Category` | Pass |
 | CAT-11 | Delete | Category không được tham chiếu | Chạy pure operation với bản copy Category test | Trả list mới, không mutate source | `success=true`; bản copy giảm 5 xuống 4, source seed vẫn 4 | Pass |
 | CAT-12 | Persistence | Reload sau Create/Update | Reload origin test | Record mới và dữ liệu cập nhật vẫn còn | Vẫn có 5 records và `Arts & Culture` | Pass |
 | CAT-13 | Dialog | Đóng bằng Escape | Mở Edit, thay tạm tên rồi nhấn Escape | Dialog đóng, không lưu dữ liệu tạm | Dialog count về 0; tên nguồn không đổi | Pass |
@@ -76,6 +79,7 @@ Tài liệu được cập nhật theo từng milestone. Các case chưa triển
 | NEWS-09 | Search + Dialog | Edit khi đang search và đóng bằng Escape | Search `showcase`, mở Edit, đổi title tạm rồi nhấn Escape | Filter vẫn đúng; dữ liệu tạm không được lưu | Còn 1/4 record; dialog đóng; title nguồn giữ nguyên | Pass |
 | NEWS-10 | Persistence | Reload sau Create/Update | Reload origin test | Record mới và quan hệ đã sửa vẫn còn | Vẫn có 4 records; Technology/Admin/Inactive được giữ | Pass |
 | NEWS-11 | Delete | Confirmation và Cancel | Bấm Delete bài test rồi Cancel | Tên record xuất hiện trong dialog; Cancel không xóa | Có nút `Delete Article`; sau Cancel bài vẫn tồn tại | Pass |
+| NEWS-DELETE-CONFIRM | Delete | Confirm xóa qua UI | Tạo `Delete Test News`, bấm Delete → Confirm, sau đó reload | Xóa đúng News; count giảm; record không xuất hiện lại sau reload | Dialog hiển thị đúng title; count giảm 4 xuống 3; reload không còn `Delete Test News` | Pass |
 | NEWS-12 | Data operations | Create/Update/Delete immutable | Chạy pure operations với bản copy seed News | Trả collection mới, không mutate source; update giữ creator | Source không đổi; add = 4, delete = 3, creator vẫn `admin-account` | Pass |
 | NEWS-13 | Responsive | Trang và form ở mobile/desktop | Kiểm tra 390 × 844 và 1365 × 768 | Không tràn ngang document; dialog nằm trong viewport; bảng cuộn trong vùng riêng | Document không tràn ngang; mobile dialog rộng 351/390px; desktop hiển thị đúng | Pass |
 
@@ -92,9 +96,10 @@ Tài liệu được cập nhật theo từng milestone. Các case chưa triển
 | USER-07 | Update | Prefill form | Edit TestUser | Form nạp đúng username, mock password, role và status | Bốn field được prefill đúng | Pass |
 | USER-08 | Update | Đổi username và status | Đổi thành TestUserUpdated/Inactive rồi Save | Update đúng ID; record khác giữ nguyên | Row đổi đúng username/status; ID không đổi | Pass |
 | USER-09 | Delete | Confirmation và Cancel | Bấm Delete TestUserUpdated rồi Cancel | Dialog hiển thị đúng record; Cancel không xóa | Dialog có nút `Delete User`; sau Cancel record vẫn còn | Pass |
-| USER-10 | Delete constraint | Xóa tài khoản đang đăng nhập | Bấm Delete Admin | Chặn xóa và giải thích lý do | Dialog chỉ có Close; không có nút confirm delete | Pass |
+| USER-10 | System account constraint | Edit/Delete baseline Admin | Bấm Edit rồi Delete Admin | Chặn sửa/xóa và giải thích đây là tài khoản hệ thống | Edit hiển thị feedback; Delete dialog chỉ có Close và không có confirm | Pass |
 | USER-11 | Delete constraint | Xóa User được News tham chiếu | Bấm Delete MinhAnh | Chặn xóa và hiển thị số News tham chiếu | Dialog báo 1 News article tham chiếu MinhAnh | Pass |
-| USER-12 | Data operations | Create/Update/Delete immutable | Chạy pure operations với bản copy seed Users | Trả collection mới, không mutate source; xóa theo ID | Append/update/delete pass; current/reference guards pass | Pass |
+| USER-DELETE-CONFIRM | Delete | Confirm xóa qua UI | Tạo `DeleteTestUser` không được News tham chiếu, bấm Delete → Confirm, sau đó reload | Xóa đúng User; count giảm; record không xuất hiện lại sau reload | Dialog hiển thị đúng username; count giảm 4 xuống 3; reload không còn `DeleteTestUser` | Pass |
+| USER-12 | Data operations | Create/Update/Delete immutable | Chạy pure operations với bản copy seed Users | Trả collection mới, không mutate source; xóa theo ID | Append/update/delete pass; system/reference guards pass | Pass |
 | USER-13 | Persistence | Reload sau Create/Update | Reload rồi login lại và mở Dashboard/Users | Session và User mới vẫn sử dụng được | Dashboard và Users đều hiển thị 4 records; TestUserUpdated còn dữ liệu | Pass |
 | USER-14 | Responsive | Users ở viewport hẹp | Mở Users trên viewport mobile | Toolbar xếp dọc; bảng cuộn trong vùng riêng; không tràn nút | Search và Add User chiếm đủ chiều rộng; table giữ trong data panel | Pass |
 

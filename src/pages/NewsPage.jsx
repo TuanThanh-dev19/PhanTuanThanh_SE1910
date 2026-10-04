@@ -8,6 +8,7 @@ import useAuth from '../hooks/useAuth.js'
 import useData from '../hooks/useData.js'
 
 function NewsPage() {
+  // Shared data and operations
   const { currentUser } = useAuth()
   const {
     categories,
@@ -17,11 +18,14 @@ function NewsPage() {
     updateNewsArticle,
     deleteNewsArticle,
   } = useData()
+
+  // Local UI state
   const [keyword, setKeyword] = useState('')
   const [formState, setFormState] = useState(null)
   const [articlePendingDelete, setArticlePendingDelete] = useState(null)
   const [feedback, setFeedback] = useState(null)
 
+  // Derived data for rendering
   const normalizedKeyword = keyword.trim().toLowerCase()
   const displayedArticles = news.filter((article) => {
     const normalizedTitle = article.title.toLowerCase()
@@ -33,6 +37,7 @@ function NewsPage() {
     )
   })
 
+  // Event handlers and display helpers
   function getCreatorName(userId) {
     return users.find((user) => user.id === userId)?.username || 'Unknown user'
   }
@@ -124,7 +129,6 @@ function NewsPage() {
           label="Search news"
           value={keyword}
           onChange={setKeyword}
-          onClear={() => setKeyword('')}
           placeholder="Search by title or content"
         />
         <button

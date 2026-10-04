@@ -43,7 +43,7 @@ User event
 UI Pages/Components
     |
     v
-AuthContext / DataContext / SettingsContext
+AuthContext / DataContext
     |
     v
 Storage Service
@@ -66,41 +66,32 @@ Kiến trúc này cho phép thay `storageService` bằng API service mà không 
 main.jsx
 └─ StrictMode
    └─ BrowserRouter
-      └─ DataProvider
-         └─ AuthProvider
-            └─ SettingsProvider
-               └─ App
-                  └─ AppRoutes
-                     ├─ LoginPage
-                     └─ ProtectedRoute
-                        └─ AdminLayout
-                           ├─ Header
-                           │  ├─ BrandLogo
-                           │  └─ UserMenu / LogoutButton
-                           ├─ Sidebar
-                           │  └─ NavigationItem[]
-                           └─ Outlet
-                              ├─ DashboardPage
-                              │  └─ SummaryCard[]
-                              ├─ CategoriesPage
-                              │  ├─ ManagementToolbar
-                              │  ├─ CategoryTable
-                              │  ├─ CategoryFormDialog
-                              │  └─ ConfirmDialog
-                              ├─ NewsPage
-                              │  ├─ ManagementToolbar
-                              │  ├─ NewsTable
-                              │  ├─ NewsFormDialog
-                              │  └─ ConfirmDialog
-                              ├─ UsersPage
-                              │  ├─ ManagementToolbar
-                              │  ├─ UserTable
-                              │  ├─ UserFormDialog
-                              │  └─ ConfirmDialog
-                              └─ SettingsPage
+      └─ AuthProvider
+         └─ DataProvider
+            └─ App / Routes
+               ├─ LoginPage
+               └─ ProtectedRoute
+                  └─ AdminLayout
+                     ├─ Header
+                     ├─ Sidebar
+                     └─ Outlet
+                        ├─ DashboardPage
+                        ├─ CategoriesPage
+                        │  ├─ CategoryTable
+                        │  ├─ CategoryFormDialog
+                        │  └─ ConfirmDialog
+                        ├─ NewsPage
+                        │  ├─ NewsTable
+                        │  ├─ NewsFormDialog
+                        │  └─ ConfirmDialog
+                        ├─ UsersPage
+                        │  ├─ UserTable
+                        │  ├─ UserFormDialog
+                        │  └─ ConfirmDialog
+                        └─ SettingsPage
 ```
 
-Provider phải bao bọc component cần đọc Context. `DataProvider` được đặt ngoài `AuthProvider` để auth có thể tra cứu tài khoản mock từ nguồn Users mà không tạo dependency vòng. `SettingsProvider` bao bọc App để Header và SettingsPage dùng chung profile. `BrowserRouter` bao bọc toàn bộ nhánh cần dùng route hooks/components.
+Provider phải bao bọc component cần đọc Context. `AuthProvider` quản lý riêng credential/session `Admin/Admin`; `DataProvider` quản lý ba collection CRUD và không quyết định đăng nhập. `BrowserRouter` bao bọc toàn bộ nhánh cần dùng route hooks/components.
 
 Không bắt buộc trừu tượng hóa `ManagementToolbar` hoặc `DataTable` ngay từ đầu. Chỉ tách thành component dùng chung sau khi Category flow chạy ổn và nhận thấy API thực sự giống nhau.
 
@@ -111,20 +102,22 @@ src/
 ├─ assets/
 │  └─ funews-logo.*
 ├─ components/
-│  ├─ common/
-│  │  ├─ ConfirmDialog.jsx
-│  │  ├─ EmptyState.jsx
-│  │  ├─ Modal.jsx
-│  │  ├─ SearchBar.jsx
-│  │  └─ StatusBadge.jsx
-│  └─ layout/
-│     ├─ Header.jsx
-│     └─ Sidebar.jsx
+│  ├─ category/            # Category table/form
+│  ├─ common/              # Modal, confirm, search, empty, badge
+│  ├─ layout/              # Header, Sidebar
+│  ├─ news/                # News table/form
+│  └─ user/                # User table/form
 ├─ context/
-│  ├─ AuthContext.jsx
-│  └─ DataContext.jsx
+│  ├─ AuthProvider.jsx
+│  ├─ DataProvider.jsx
+│  ├─ auth-context.js
+│  └─ data-context.js
 ├─ data/
+│  ├─ dataOperations.js
 │  └─ seedData.js
+├─ hooks/
+│  ├─ useAuth.js
+│  └─ useData.js
 ├─ layouts/
 │  └─ AdminLayout.jsx
 ├─ pages/
@@ -135,28 +128,26 @@ src/
 │  ├─ SettingsPage.jsx
 │  └─ UsersPage.jsx
 ├─ routes/
-│  ├─ AppRoutes.jsx
 │  └─ ProtectedRoute.jsx
 ├─ services/
 │  └─ storageService.js
-├─ styles/
-│  ├─ components.css
-│  ├─ layout.css
-│  └─ tokens.css
 ├─ utils/
-│  ├─ constants.js
 │  ├─ id.js
-│  └─ validators.js
+│  ├─ categoryValidators.js
+│  ├─ newsValidators.js
+│  └─ userValidators.js
 ├─ App.jsx
+├─ App.css
 ├─ index.css
 └─ main.jsx
 
 docs/
 ├─ design.md
+├─ code-flow.md
 ├─ requirements.md
-├─ test-matrix.md          # tạo ở milestone testing
-├─ debug-log.md            # ghi lỗi thật trong quá trình làm
-└─ ai-usage-log.md         # ghi ngay khi dùng AI
+├─ test-matrix.md
+├─ debug-log.md
+└─ ai-usage-log.md
 ```
 
 ## 6. Routing
@@ -180,7 +171,6 @@ Navigation dùng React Router để URL phản ánh màn hình hiện tại, act
 |---|---|---|
 | `isAuthenticated`, `currentUser` | `AuthContext` | Chi phối route, Header và Logout |
 | `categories`, `news`, `users` | `DataContext` | Nhiều page/Dashboard cần đọc dữ liệu |
-| `displayName`, `email` | `SettingsContext` | SettingsPage chỉnh sửa và Header hiển thị cùng một profile |
 | `keyword` | Management page tương ứng | Chỉ phục vụ search của page đó |
 | `isFormOpen`, `formMode` | Management page | Điều khiển dialog Create/Update |
 | `selectedItem` | Management page | Dùng cho Update/Delete |
@@ -203,30 +193,26 @@ funews.categories
 funews.news
 funews.users
 funews.session
-funews.settings
 ```
 
 ### 8.2 Hydration flow
 
 1. Provider gọi storage service khi khởi tạo.
-2. Nếu key chưa tồn tại hoặc dữ liệu không hợp lệ, dùng seed data.
+2. Nếu key chưa tồn tại, JSON lỗi hoặc giá trị không phải array, dùng seed data.
 3. CRUD update React state trước/song song với việc persist bản mới.
 4. Reload hydrate lại từ storage.
-5. Settings có thể cung cấp thao tác reset demo data nếu cần, kèm confirmation.
 
 Storage service phải xử lý `JSON.parse` lỗi và không để dữ liệu hỏng làm ứng dụng crash.
 
 ### 8.3 Settings flow
 
 ```text
-Settings form → validate display name/email → Save
-              → SettingsContext update → Header re-render
-              → persist funews.settings → reload vẫn giữ cấu hình
+SettingsPage → đọc currentUser từ AuthContext
+             → hiển thị username/role và thông tin mock environment
 ```
 
-- `username` và `role` chỉ đọc vì thuộc phạm vi quản lý tài khoản.
-- `displayName` là thông tin trình bày của phiên quản trị và xuất hiện trên Header.
-- Dữ liệu Settings sai schema hoặc JSON hỏng sẽ fallback về mặc định.
+- Settings là trang read-only để giữ đúng menu/scope mà không tạo thêm global state.
+- Header hiển thị trực tiếp `currentUser.username` và role từ AuthContext.
 
 ## 9. Authentication design
 
@@ -234,7 +220,7 @@ Settings form → validate display name/email → Save
 - Validate empty trước khi xác thực.
 - Credential baseline: `Admin` / `Admin`, phân biệt hoa thường.
 - Staff là dữ liệu quản lý theo core scope và không đăng nhập; phân quyền Staff chỉ thực hiện nếu có modification task.
-- Khi thành công, lưu `currentUserId`; UI lấy user từ users source data.
+- Khi thành công, lưu `currentUserId`; UI lấy current user từ AuthContext độc lập với User CRUD.
 - `ProtectedRoute` kiểm tra auth state trước khi render AdminLayout.
 - Logout xóa session và chuyển về `/login`.
 - Đây là mock authentication cho assignment; README phải ghi rõ không phải cơ chế production.
@@ -302,7 +288,7 @@ Yêu cầu:
 | Thao tác | Policy |
 |---|---|
 | Xóa Category đang có News | Chặn xóa; thông báo số News đang sử dụng Category |
-| Xóa User đang đăng nhập | Chặn xóa để session không trở thành orphan |
+| Sửa/xóa system Admin | Chặn thao tác để giữ credential baseline và creator relation ổn định |
 | Xóa User được News tham chiếu | Chặn xóa ở baseline; có thể đổi sang giữ snapshot username nếu requirement đổi |
 | Chọn Category cho News | Chỉ cho chọn Category tồn tại; có thể hiển thị cả Active/Inactive nhưng trạng thái phải rõ |
 
@@ -334,16 +320,16 @@ Policy chặn xóa giúp giữ referential integrity và dễ chứng minh hơn 
 | ID | Quyết định | Lý do | Trade-off / ảnh hưởng khi đổi yêu cầu |
 |---|---|---|---|
 | D01 | Dùng React Router | URL rõ, protected route, active menu và back/forward dễ kiểm thử | Thêm dependency và route configuration |
-| D02 | Auth trong `AuthContext` | Header, route và Login cùng cần auth state | Nếu thêm backend phải đổi login/service nhưng UI ít thay đổi |
+| D02 | Auth mock độc lập với User CRUD | Credential `Admin/Admin` không bị thay đổi ngoài ý muốn khi quản lý Users | Nếu thêm backend phải thay AuthProvider bằng API auth |
 | D03 | Shared entity data trong `DataContext` | Dashboard và nhiều page cần cùng source data | Context lớn có thể re-render nhiều; scope hiện tại vẫn nhỏ |
-| D04 | Persistence qua storage service | Tách browser storage khỏi UI và tạo đường thay bằng API | Phải xử lý parse/schema lỗi; localStorage không phải database |
+| D04 | Persistence qua storage service | Tách browser storage khỏi UI và tạo đường thay bằng API | Chỉ fallback khi parse/type lỗi; localStorage không phải database |
 | D05 | Một form dialog cho Create/Update của từng entity | Giảm lặp form và thể hiện rõ `mode/selectedItem` | Không dùng một generic form cho cả ba entity để tránh khó đọc |
 | D06 | Search là derived data | Không phá source list; clear/search/CRUD nhất quán | Với API thật sẽ chuyển sang query/server state |
 | D07 | Chặn xóa khi có relation | Giữ dữ liệu hợp lệ và dễ giải thích | Người dùng phải xử lý News/User liên quan trước |
 | D08 | CSS thuần, không dùng UI framework | Ít dependency, dễ chứng minh code tự viết | Tốn công styling và accessibility dialog hơn |
 | D09 | ID bằng `crypto.randomUUID()` khi khả dụng | Unique và không phụ thuộc index/độ dài mảng | Có thể cần fallback nếu môi trường cũ |
 | D10 | Triển khai Category hoàn chỉnh trước | Tạo pattern CRUD đã kiểm chứng rồi áp dụng cho News/User | Tránh trừu tượng hóa sớm; có thể refactor sau |
-| D11 | Settings dùng Context riêng | Header và SettingsPage cần cùng profile mà không trộn với entity data | Thêm một Provider nhỏ nhưng luồng state rõ và dễ thay bằng API sau này |
+| D11 | Settings là trang read-only | Đáp ứng menu bắt buộc mà không thêm Context/storage cho tính năng phụ | Nếu đề mở rộng profile, bổ sung form và state sau |
 
 ## 16. Milestone triển khai
 

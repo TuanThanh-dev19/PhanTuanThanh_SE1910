@@ -8,13 +8,17 @@ import useAuth from '../hooks/useAuth.js'
 import useData from '../hooks/useData.js'
 
 function UsersPage() {
+  // Shared data and operations
   const { currentUser } = useAuth()
   const { createUser, deleteUser, news, updateUser, users } = useData()
+
+  // Local UI state
   const [keyword, setKeyword] = useState('')
   const [formState, setFormState] = useState(null)
   const [userPendingDelete, setUserPendingDelete] = useState(null)
   const [feedback, setFeedback] = useState(null)
 
+  // Derived data for rendering
   const normalizedKeyword = keyword.trim().toLowerCase()
   const displayedUsers = users.filter((user) =>
     user.username.toLowerCase().includes(normalizedKeyword),
@@ -22,9 +26,10 @@ function UsersPage() {
   const deleteReferenceCount = userPendingDelete
     ? news.filter((article) => article.createdBy === userPendingDelete.id).length
     : 0
-  const isDeletingCurrentUser = userPendingDelete?.id === currentUser.id
-  const isDeleteBlocked = isDeletingCurrentUser || deleteReferenceCount > 0
+  const isDeletingSystemAdmin = userPendingDelete?.id === currentUser.id
+  const isDeleteBlocked = isDeletingSystemAdmin || deleteReferenceCount > 0
 
+  // Event handlers
   function openCreateForm() {
     setFeedback(null)
     setFormState({ mode: 'create', user: null })
@@ -32,6 +37,15 @@ function UsersPage() {
 
   function openUpdateForm(user) {
     setFeedback(null)
+
+    if (user.id === currentUser.id) {
+      setFeedback({
+        type: 'error',
+        message: 'The system Admin account cannot be edited.',
+      })
+      return
+    }
+
     setFormState({ mode: 'update', user })
   }
 
@@ -47,7 +61,17 @@ function UsersPage() {
         message: `${createdUser.username} was created successfully.`,
       })
     } else {
-      updateUser(formState.user.id, userData)
+      const result = updateUser(formState.user.id, userData)
+
+      if (!result.success) {
+        setFeedback({
+          type: 'error',
+          message: 'The system Admin account cannot be edited.',
+        })
+        closeForm()
+        return
+      }
+
       setFeedback({
         type: 'success',
         message: `${userData.username} was updated successfully.`,
@@ -67,12 +91,12 @@ function UsersPage() {
   }
 
   function confirmDelete() {
-    const result = deleteUser(userPendingDelete.id, currentUser.id)
+    const result = deleteUser(userPendingDelete.id)
 
     if (!result.success) {
       const message =
-        result.reason === 'current-user'
-          ? 'The signed-in account cannot be deleted.'
+        result.reason === 'system-user'
+          ? 'The system Admin account cannot be deleted.'
           : `${userPendingDelete.username} is still referenced by ${result.referenceCount} news article${result.referenceCount > 1 ? 's' : ''}.`
 
       setFeedback({ type: 'error', message })
@@ -88,11 +112,11 @@ function UsersPage() {
   }
 
   function getDeleteDialogContent() {
-    if (isDeletingCurrentUser) {
+    if (isDeletingSystemAdmin) {
       return {
-        title: 'Signed-in account cannot be deleted',
+        title: 'System Admin cannot be deleted',
         description:
-          'Log in with another administrator before deleting this account.',
+          'This baseline account is required for the Admin/Admin login flow.',
       }
     }
 
@@ -131,7 +155,6 @@ function UsersPage() {
           label="Search users"
           value={keyword}
           onChange={setKeyword}
-          onClear={() => setKeyword('')}
           placeholder="Search by username"
         />
         <button

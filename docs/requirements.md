@@ -133,7 +133,7 @@ Quy tắc:
 - `mockPassword` chỉ phục vụ assignment, không phải mật khẩu production.
 - `role`: `1 = Admin`, `2 = Staff`.
 - `status`: `1 = Active`, `0 = Inactive`.
-- Không cho xóa tài khoản đang đăng nhập trong phiên hiện tại.
+- Không cho sửa hoặc xóa tài khoản hệ thống `admin-account`; CRUD đầy đủ được thực hiện với các tài khoản quản lý khác.
 
 ### 6.4 Session/Auth
 

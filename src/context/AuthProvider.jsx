@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import useData from '../hooks/useData.js'
+import { SYSTEM_ADMIN } from '../data/seedData.js'
 import AuthContext from './auth-context.js'
 
 const SESSION_STORAGE_KEY = 'funews.session'
-
-function isBaselineAdmin(user) {
-  return (
-    user?.username === 'Admin' &&
-    user?.mockPassword === 'Admin' &&
-    user?.role === 1 &&
-    user?.status === 1
-  )
-}
+const AUTHENTICATED_ADMIN = Object.freeze({
+  id: SYSTEM_ADMIN.id,
+  username: SYSTEM_ADMIN.username,
+  role: SYSTEM_ADMIN.role,
+  status: SYSTEM_ADMIN.status,
+})
 
 function clearStoredSession() {
   try {
@@ -21,7 +18,7 @@ function clearStoredSession() {
   }
 }
 
-function readStoredSession(users) {
+function readStoredSession() {
   try {
     const storedSession = localStorage.getItem(SESSION_STORAGE_KEY)
 
@@ -31,16 +28,11 @@ function readStoredSession(users) {
 
     const parsedSession = JSON.parse(storedSession)
 
-    if (parsedSession?.isAuthenticated === true) {
-      const storedUserId =
-        parsedSession.currentUserId || parsedSession.currentUser?.id
-      const hasActiveUser = users.some(
-        (user) => user.id === storedUserId && isBaselineAdmin(user),
-      )
-
-      if (hasActiveUser) {
-        return storedUserId
-      }
+    if (
+      parsedSession?.isAuthenticated === true &&
+      parsedSession.currentUserId === SYSTEM_ADMIN.id
+    ) {
+      return SYSTEM_ADMIN.id
     }
   } catch {
     // Invalid JSON is handled by clearing the session below.
@@ -51,26 +43,15 @@ function readStoredSession(users) {
 }
 
 function AuthProvider({ children }) {
-  const { users } = useData()
-  const [currentUserId, setCurrentUserId] = useState(() =>
-    readStoredSession(users),
-  )
+  const [currentUserId, setCurrentUserId] = useState(readStoredSession)
   const currentUser =
-    users.find(
-      (user) => user.id === currentUserId && isBaselineAdmin(user),
-    ) || null
+    currentUserId === SYSTEM_ADMIN.id ? AUTHENTICATED_ADMIN : null
 
   function login(username, password) {
-    if (username !== 'Admin' || password !== 'Admin') {
-      return {
-        success: false,
-        message: 'Username or password is incorrect.',
-      }
-    }
-
-    const matchedUser = users.find(isBaselineAdmin)
-
-    if (!matchedUser) {
+    if (
+      username !== SYSTEM_ADMIN.username ||
+      password !== SYSTEM_ADMIN.mockPassword
+    ) {
       return {
         success: false,
         message: 'Username or password is incorrect.',
@@ -79,7 +60,7 @@ function AuthProvider({ children }) {
 
     const nextSession = {
       isAuthenticated: true,
-      currentUserId: matchedUser.id,
+      currentUserId: SYSTEM_ADMIN.id,
     }
 
     try {
@@ -87,7 +68,7 @@ function AuthProvider({ children }) {
     } catch {
       // Login still works for the current tab when persistence is unavailable.
     }
-    setCurrentUserId(matchedUser.id)
+    setCurrentUserId(SYSTEM_ADMIN.id)
 
     return { success: true }
   }

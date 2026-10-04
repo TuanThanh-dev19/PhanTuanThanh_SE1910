@@ -14,7 +14,7 @@ The assignment does not use a Spring Boot backend, database, JWT or production a
 
 ## Requirements
 
-- Node.js and npm.
+- Node.js 22.22 or newer and npm.
 
 ## Install and run
 
@@ -50,17 +50,13 @@ The credential is case-sensitive. Other mock Staff records are management data a
 - Popup dialog for Create/Update.
 - Confirmation dialog for Delete.
 - Empty and no-result states.
-- Dashboard summary and functional personal Settings.
-- Settings profile with display-name/email validation, Header synchronization
-  and `localStorage` persistence.
+- Dashboard summary and a read-only Settings page for the current mock session.
 
 ## Data and delete rules
 
 - Category, News and Users are initialized from seed data and persisted in `localStorage`.
-- Personal Settings are stored under `funews.settings` and safely fall back to
-  defaults when saved data is missing or invalid.
 - A Category referenced by News cannot be deleted.
-- The signed-in User cannot be deleted.
+- The baseline system Admin cannot be edited or deleted.
 - A User referenced as a News creator cannot be deleted.
 - User mock passwords are not displayed in the Users table.
 
@@ -70,19 +66,20 @@ The credential is case-sensitive. Other mock Staff records are management data a
 src/
 ├─ components/   Reusable layout, common and entity components
 ├─ context/      Authentication and shared data providers
-├─ data/         Initial mock data
+├─ data/         Initial mock data and immutable CRUD operations
 ├─ hooks/        Context access hooks
 ├─ layouts/      Shared admin layout
 ├─ pages/        Login and administration pages
 ├─ routes/       Protected route
 ├─ services/     localStorage access
-└─ utils/        Validation and immutable CRUD operations
+└─ utils/        Form validation and ID generation
 ```
 
 ## Verification documents
 
 - `docs/requirements.md`: requirement traceability and data rules.
 - `docs/design.md`: component, state, persistence and CRUD design decisions.
+- `docs/code-flow.md`: concise Login, CRUD, Search and reload execution flows.
 - `docs/test-matrix.md`: manual test cases and actual results.
 - `docs/debug-log.md`: defects, root causes, fixes and retests.
 - `docs/ai-usage-log.md`: AI prompts, applied suggestions and verification.

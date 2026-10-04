@@ -7,6 +7,7 @@ import SearchBar from '../components/common/SearchBar.jsx'
 import useData from '../hooks/useData.js'
 
 function CategoriesPage() {
+  // Shared data and operations
   const {
     categories,
     news,
@@ -14,11 +15,14 @@ function CategoriesPage() {
     updateCategory,
     deleteCategory,
   } = useData()
+
+  // Local UI state
   const [keyword, setKeyword] = useState('')
   const [formState, setFormState] = useState(null)
   const [categoryPendingDelete, setCategoryPendingDelete] = useState(null)
   const [feedback, setFeedback] = useState(null)
 
+  // Derived data for rendering
   const normalizedKeyword = keyword.trim().toLowerCase()
   const displayedCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(normalizedKeyword),
@@ -29,6 +33,7 @@ function CategoriesPage() {
       ).length
     : 0
 
+  // Event handlers
   function openCreateForm() {
     setFeedback(null)
     setFormState({ mode: 'create', category: null })
@@ -106,7 +111,6 @@ function CategoriesPage() {
           label="Search categories"
           value={keyword}
           onChange={setKeyword}
-          onClear={() => setKeyword('')}
           placeholder="Search by category name"
         />
         <button

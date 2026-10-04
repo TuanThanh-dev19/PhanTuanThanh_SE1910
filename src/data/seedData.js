@@ -1,3 +1,11 @@
+export const SYSTEM_ADMIN = Object.freeze({
+  id: 'admin-account',
+  username: 'Admin',
+  mockPassword: 'Admin',
+  role: 1,
+  status: 1,
+})
+
 export const seedCategories = [
   {
     id: 'category-business',
@@ -22,13 +30,7 @@ export const seedCategories = [
 ]
 
 export const seedUsers = [
-  {
-    id: 'admin-account',
-    username: 'Admin',
-    mockPassword: 'Admin',
-    role: 1,
-    status: 1,
-  },
+  { ...SYSTEM_ADMIN },
   {
     id: 'user-minh-anh',
     username: 'MinhAnh',

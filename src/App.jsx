@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import './App.css'
 import LoginPage from './pages/LoginPage.jsx'
 import DashboardPage from './pages/DashboardPage.jsx'
@@ -12,6 +12,7 @@ import useAuth from './hooks/useAuth.js'
 
 function App() {
   const { isAuthenticated } = useAuth()
+  const location = useLocation()
   const defaultRoute = isAuthenticated ? '/dashboard' : '/login'
 
   return (
@@ -20,7 +21,7 @@ function App() {
       <Route
         path="/login"
         element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
+          isAuthenticated ? <Navigate to={location.state?.from || '/dashboard'} replace /> : <LoginPage />
         }
       />
 

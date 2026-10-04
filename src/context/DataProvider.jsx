@@ -3,115 +3,36 @@ import {
   seedCategories,
   seedNews,
   seedUsers,
+  SYSTEM_ADMIN,
 } from '../data/seedData.js'
+import {
+  appendCategory,
+  appendNewsArticle,
+  appendUser,
+  removeCategory,
+  removeNewsArticle,
+  removeUser,
+  replaceCategory,
+  replaceNewsArticle,
+  replaceUser,
+} from '../data/dataOperations.js'
 import {
   loadCollection,
   saveCollection,
   STORAGE_KEYS,
 } from '../services/storageService.js'
 import DataContext from './data-context.js'
-import {
-  appendCategory,
-  removeCategory,
-  replaceCategory,
-} from '../utils/categoryOperations.js'
 import { createId } from '../utils/id.js'
-import {
-  appendNewsArticle,
-  removeNewsArticle,
-  replaceNewsArticle,
-} from '../utils/newsOperations.js'
-import { appendUser, removeUser, replaceUser } from '../utils/userOperations.js'
-
-function isStatus(value) {
-  return value === 0 || value === 1
-}
-
-function hasUniqueValues(records, getValue) {
-  const values = records.map(getValue)
-  return new Set(values).size === values.length
-}
-
-function isCategory(category) {
-  return (
-    typeof category?.id === 'string' &&
-    category.id.trim() !== '' &&
-    typeof category?.name === 'string' &&
-    category.name.trim() !== '' &&
-    isStatus(category?.status)
-  )
-}
-
-function isNewsArticle(article) {
-  return (
-    typeof article?.id === 'string' &&
-    article.id.trim() !== '' &&
-    typeof article?.title === 'string' &&
-    article.title.trim() !== '' &&
-    typeof article?.content === 'string' &&
-    article.content.trim() !== '' &&
-    typeof article?.categoryId === 'string' &&
-    typeof article?.createdBy === 'string' &&
-    isStatus(article?.status)
-  )
-}
-
-function isUser(user) {
-  return (
-    typeof user?.id === 'string' &&
-    user.id.trim() !== '' &&
-    typeof user?.username === 'string' &&
-    user.username.trim() !== '' &&
-    typeof user?.mockPassword === 'string' &&
-    user.mockPassword.trim() !== '' &&
-    (user?.role === 1 || user?.role === 2) &&
-    isStatus(user?.status)
-  )
-}
-
-function isCategoryCollection(categories) {
-  return (
-    categories.every(isCategory) &&
-    hasUniqueValues(categories, (category) => category.id) &&
-    hasUniqueValues(categories, (category) => category.name.trim().toLowerCase())
-  )
-}
-
-function isUserCollection(users) {
-  return (
-    users.every(isUser) &&
-    hasUniqueValues(users, (user) => user.id) &&
-    hasUniqueValues(users, (user) => user.username.trim().toLowerCase())
-  )
-}
-
-function isNewsCollection(articles, categories, users) {
-  return (
-    articles.every(isNewsArticle) &&
-    hasUniqueValues(articles, (article) => article.id) &&
-    articles.every(
-      (article) =>
-        categories.some((category) => category.id === article.categoryId) &&
-        users.some((user) => user.id === article.createdBy),
-    )
-  )
-}
 
 function DataProvider({ children }) {
   const [categories, setCategories] = useState(() =>
-    loadCollection(
-      STORAGE_KEYS.categories,
-      seedCategories,
-      isCategoryCollection,
-    ),
+    loadCollection(STORAGE_KEYS.categories, seedCategories),
   )
   const [users, setUsers] = useState(() =>
-    loadCollection(STORAGE_KEYS.users, seedUsers, isUserCollection),
+    loadCollection(STORAGE_KEYS.users, seedUsers),
   )
   const [news, setNews] = useState(() =>
-    loadCollection(STORAGE_KEYS.news, seedNews, (articles) =>
-      isNewsCollection(articles, categories, users),
-    ),
+    loadCollection(STORAGE_KEYS.news, seedNews),
   )
 
   useEffect(() => {
@@ -188,11 +109,16 @@ function DataProvider({ children }) {
   }
 
   function updateUser(userId, userData) {
+    if (userId === SYSTEM_ADMIN.id) {
+      return { success: false, reason: 'system-user' }
+    }
+
     setUsers((previous) => replaceUser(previous, userId, userData))
+    return { success: true, reason: null }
   }
 
-  function deleteUser(userId, currentUserId) {
-    const result = removeUser(users, news, userId, currentUserId)
+  function deleteUser(userId) {
+    const result = removeUser(users, news, userId, SYSTEM_ADMIN.id)
 
     if (!result.success) {
       return {
